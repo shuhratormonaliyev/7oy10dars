@@ -44,7 +44,7 @@ const Home = () => {
 
       <h3 className="text-xl font-bold mb-4">Your top mixes</h3>
       <div className="grid grid-cols-3 gap-4 mb-8">
-        {topPlaylists.slice(0, 9).map((playlist, index) => (
+        {topPlaylists.slice(0, 18).map((playlist, index) => (
           <div
             key={index}
             className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
