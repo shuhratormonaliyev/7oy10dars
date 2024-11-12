@@ -36,7 +36,6 @@ function Home() {
       .get("browse/categories/0JQ5DAqbMKFHOzuVTgTizF/playlists")
       .then((response) => {
         setForYou(response.data.playlists.items);
-        // console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -47,7 +46,6 @@ function Home() {
       .get("browse/categories/0JQ5DAqbMKFQ00XGBls6ym/playlists")
       .then((response) => {
         setPlayed(response.data.playlists.items);
-        // console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -58,7 +56,6 @@ function Home() {
       .get("browse/categories/0JQ5DAqbMKFLVaM30PMBm4/playlists")
       .then((response) => {
         setBackIn(response.data.playlists.items);
-        // console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -75,29 +72,15 @@ function Home() {
         console.log(err);
       });
   }, []);
-  // console.log(10, data);
-  // function handlechange(playlist) {
-  //   console.log("change", playlist);
-  //   navigate("/details", { playlist });
-  // }
+ 
   const handlechange = (id) => {
-    // console.log(id);
     navigate(`/details/${id}`);
-    // http.get(`playlists/${id}`)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     navigate(`/details/${id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-3 md:p-6">
       <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Good afternoon</h2>
 
-      {/* Top grid section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-4 md:mb-6">
         {music.slice(0, 6).map((playlist, index) => (
           <div
@@ -115,7 +98,6 @@ function Home() {
         ))}
       </div>
 
-      {/* Playlist sections */}
       {[
         { title: "Your top mixes", data: topMix },
         { title: "MADE FOR YOU", data: forYou },
