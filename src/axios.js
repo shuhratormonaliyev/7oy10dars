@@ -1,12 +1,14 @@
 import axios from "axios";
-import { getToken } from "./utils/utils";
+import { getToken } from "../src/utils/utils";
 
-const https = axios.create({
-    baseURL: "https://api.spotify.com/v1/browse/"
+const http = axios.create({
+    baseURL: "https://api.spotify.com/v1/"
 });
 
-https.interceptors.request.use(config =>{
+http.interceptors.request.use(config =>{
     const authToken = localStorage.getItem('token');
+    // console.log("axi" , authToken);
+    
     if (authToken) {
         config.headers.Authorization = `${authToken}`;
     } else {
@@ -17,7 +19,7 @@ https.interceptors.request.use(config =>{
     return config;
 });
 
-https.interceptors.response.use(
+http.interceptors.response.use(
     response =>{
         return response
     },
@@ -34,4 +36,4 @@ https.interceptors.response.use(
         return Promise.reject(error);
     }
 )
-export default https;
+export default http;

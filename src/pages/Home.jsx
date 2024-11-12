@@ -1,176 +1,154 @@
-import React, { useEffect, useState } from "react";
-import https from "../axios";
+import React, { useState, useEffect } from "react";
+import http from "../axios";
 import { useNavigate } from "react-router-dom";
-
-const Home = () => {
-  const navigate = useNavigate();
-  const [topPlaylists, setTopPlaylists] = useState([]);
+function Home() {
   const [topMix, setTopMix] = useState([]);
   const [forYou, setForYou] = useState([]);
   const [played, setPlayed] = useState([]);
   const [backIn, setBackIn] = useState([]);
   const [yours, setYours] = useState([]);
-
+  const navigate = useNavigate();
+  const [music , setMusic] = useState([])
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responses = await Promise.all([
-          https.get("categories/toplists/playlists"),
-          https.get("categories/0JQ5DAqbMKFHOzuVTgTizF/playlists"),
-          https.get("categories/0JQ5DAqbMKFQ00XGBls6ym/playlists"),
-          https.get("categories/0JQ5DAqbMKFLVaM30PMBm4/playlists"),
-          https.get("categories/0JQ5DAqbMKFCbimwdOYlsl/playlists"),
-        ]);
-
-        setTopMix(responses[0].data.playlists.items);
-        setForYou(responses[1].data.playlists.items);
-        setPlayed(responses[2].data.playlists.items);
-        setBackIn(responses[3].data.playlists.items);
-        setYours(responses[4].data.playlists.items);
-
-        const token = localStorage.getItem("spotify_token");
-        const topPlaylistsResponse = await https.get(
-          "https://api.spotify.com/v1/browse/categories/toplists/playlists",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setTopPlaylists(topPlaylistsResponse.data.playlists.items);
-      } catch (error) {
-        console.error("Error fetching playlists:", error);
-      }
-    };
-
-    fetchData();
+  http.get('browse/featured-playlists')
+  .then(response => {
+    setMusic(response.data.playlists.items);
+    console.log('featured',response);
+    
+  })
+  .catch(err => {
+    console.log(err);
+  })
+}, [])
+  useEffect(() => {
+    http
+      .get("browse/categories/toplists/playlists")
+      .then((response) => {
+        setTopMix(response.data.playlists.items);
+        console.log('toplists',response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
-
-  const handleChange = (playlist) => {
-
-    navigate(`/details/${playlist.id}`, { state: { playlist } });
+  useEffect(() => {
+    http
+      .get("browse/categories/0JQ5DAqbMKFHOzuVTgTizF/playlists")
+      .then((response) => {
+        setForYou(response.data.playlists.items);
+        // console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    http
+      .get("browse/categories/0JQ5DAqbMKFQ00XGBls6ym/playlists")
+      .then((response) => {
+        setPlayed(response.data.playlists.items);
+        // console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    http
+      .get("browse/categories/0JQ5DAqbMKFLVaM30PMBm4/playlists")
+      .then((response) => {
+        setBackIn(response.data.playlists.items);
+        // console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    http
+      .get("browse/categories/0JQ5DAqbMKFCbimwdOYlsl/playlists")
+      .then((response) => {
+        setYours(response.data.playlists.items);
+        // console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  // console.log(10, data);
+  // function handlechange(playlist) {
+  //   console.log("change", playlist);
+  //   navigate("/details", { playlist });
+  // }
+  const handlechange = (id) => {
+    // console.log(id);
+    navigate(`/details/${id}`);
+    // http.get(`playlists/${id}`)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     navigate(`/details/${id}`);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-6">
-      <h2 className="text-2xl font-bold mb-6">Good afternoon</h2>
+    <div className="bg-gray-900 min-h-screen text-white p-3 md:p-6">
+      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Good afternoon</h2>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {topPlaylists.slice(0, 6).map((playlist, index) => (
+      {/* Top grid section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-4 md:mb-6">
+        {music.slice(0, 6).map((playlist, index) => (
           <div
+            onClick={() => handlechange(playlist.id)}
             key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800 rounded-lg p-4 flex items-center space-x-4 hover:bg-gray-700 transition duration-300 cursor-pointer"
+            className="bg-gray-800 rounded-lg p-2 md:p-4 flex items-center space-x-2 md:space-x-4 hover:bg-gray-700 transition duration-300 cursor-pointer"
           >
             <img
               src={playlist.images[0]?.url}
               alt={playlist.name}
-              className="w-16 h-16 rounded-md"
+              className="w-12 h-12 md:w-16 md:h-16 rounded-md"
             />
-            <span className="text-lg font-semibold">{playlist.name}</span>
-          </div>
-        ))}
-      </div>
-      <h3 className="text-xl font-bold mb-4">Your top mixes</h3>
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {topMix.slice(0, 4).map((playlist, index) => (
-          <div
-            key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
-          >
-            <img
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="w-full h-40 rounded-md mb-2"
-            />
-            <span className="text-sm font-medium text-center">{playlist.name}</span>
+            <span className="text-sm md:text-lg font-semibold line-clamp-2">{playlist.name}</span>
           </div>
         ))}
       </div>
 
-      <h3 className="text-xl font-bold mb-4">MADE FOR YOU</h3>
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {forYou.slice(0, 4).map((playlist, index) => (
-          <div
-            key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800  rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
-          >
-            <img
-              width={250}
-              height={250}
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="w-full h-40 rounded-md mb-2 "
-            />
-            <span className="text-sm font-medium text-center">{playlist.name}</span>
+      {/* Playlist sections */}
+      {[
+        { title: "Your top mixes", data: topMix },
+        { title: "MADE FOR YOU", data: forYou },
+        { title: "RECENT PLAYED", data: played },
+        { title: "JUMP BACK IN", data: backIn },
+        { title: "UNIQUELY YOURS", data: yours },
+      ].map((section, sectionIndex) => (
+        <div key={sectionIndex} className="mb-6 md:mb-8">
+          <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">{section.title}</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+            {section.data.slice(0, 4).map((playlist, index) => (
+              <div
+                onClick={() => handlechange(playlist.id)}
+                key={index}
+                className="bg-gray-800 rounded-lg p-2 md:p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300 cursor-pointer"
+              >
+                <div className="w-full aspect-square mb-2">
+                  <img
+                    src={playlist.images[0]?.url}
+                    alt={playlist.name}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                </div>
+                <span className="text-xs md:text-sm font-medium text-center line-clamp-2">
+                  {playlist.name}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <h3 className="text-xl font-bold mb-4">RECENT PLAYED</h3>
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {played.slice(0, 4).map((playlist, index) => (
-          <div
-            key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
-          >
-            <img
-              width={250}
-              height={250}
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="w-full h-40 rounded-md mb-2"
-            />
-            <span className="text-sm font-medium text-center">{playlist.name}</span>
-          </div>
-        ))}
-      </div>
-
-      <h3 className="text-xl font-bold mb-4">JUMP BACK IN</h3>
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {backIn.slice(0, 4).map((playlist, index) => (
-          <div
-            key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
-          >
-            <img
-              width={250}
-              height={250}
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="w-full h-40 rounded-md mb-2"
-            />
-            <span className="text-sm font-medium text-center">{playlist.name}</span>
-          </div>
-        ))}
-      </div>
-
-      <h3 className="text-xl font-bold mb-4">UNIQUELY YOURS</h3>
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {yours.slice(0, 4).map((playlist, index) => (
-          <div
-            key={index}
-            onClick={() => handleChange(playlist)}
-            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
-          >
-            <img
-              width={250}
-              height={250}
-              src={playlist.images[0]?.url}
-              alt={playlist.name}
-              className="w-full h-40 rounded-md mb-2"
-            />
-            <span className="text-sm font-medium text-center">{playlist.name}</span>
-          </div>
-        ))}
-      </div>
-
+        </div>
+      ))}
     </div>
   );
-};
+}
 
 export default Home;

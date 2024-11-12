@@ -1,29 +1,19 @@
-import React, {useEffect} from 'react'
-import MainLayout from './layouts/MainLayout';
+import React, {useEffect,useState} from 'react'
+import MainLayout from './Layouts/MainLayout'
 import { Route, Routes } from 'react-router-dom'
-import Likes from "./pages/Likes"
+import Like from "./pages/Like"
 import Home from "./pages/Home"
 import Details from "./pages/Details"
-import https from './axios'
-
+import http from './axios'
 function App() {  
-  useEffect(() => {
-  https.get('featured-playlists')
-  .then(response => {
-    console.log(response);
-  })
-  .catch(err => {
-    console.log(err);
-  })
-}, [])
-
+ 
   return (
-    <div>
+    <div className='w-full'>
       <MainLayout>
         <Routes>
           <Route path='/' element={<Home></Home>}></Route>
-          <Route path='/likes' element={<Likes></Likes>}></Route>
-          <Route path="/details/:playlistId" element={<Details></Details>}></Route>
+          <Route path='/like' element={<Like></Like>}></Route>
+          <Route path='/details/:id' element={<Details></Details>}></Route>
         </Routes>
       </MainLayout>
     </div>
